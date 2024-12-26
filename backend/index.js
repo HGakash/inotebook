@@ -1,11 +1,16 @@
-const connectToMongo = require('./db')
-const express = require('express')
+import connectToMongo from './db.js'
+import express from 'express'
 const app = express()
-const port = 3000
+const port = 5000
+import authRoute from './routes/auth.js'
+import notesRoute from './routes/notes.js'
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+
+app.use(express.json())
+
+//Availbale Routes
+app.use('/api/auth', authRoute);
+app.use('/api/notes',notesRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
