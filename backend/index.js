@@ -13,7 +13,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/notes',notesRoute);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`iNotebook backend listening on port ${port}`)
 })
 
 connectToMongo();
