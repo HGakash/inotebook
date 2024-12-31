@@ -4,7 +4,9 @@ const app = express()
 const port = 5000
 import authRoute from './routes/auth.js'
 import notesRoute from './routes/notes.js'
+import cors from 'cors';
 
+app.use(cors())
 
 app.use(express.json())
 

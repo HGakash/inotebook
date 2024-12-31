@@ -17,6 +17,7 @@ router.post('/createuser',[
    body('password','password must be atleast 5 charecters').isLength({min:5})
 ],async (req,res)=>{
    //if there are errors, return bad request and the error 
+   let success = false;
    const errors = validationResult(req);
    if(!errors.isEmpty()){
       return res.status(400).json({errors:errors.array()});
@@ -44,9 +45,9 @@ router.post('/createuser',[
          id:user.id
       }
     }
+    success=true;
     const authToken = jwt.sign(data, JWT_SECRET);
-    
-    res.json({authToken});
+    res.json({success,authToken});
    
   } catch (error) {
     console.error(error.message);
@@ -60,7 +61,7 @@ router.post('/login',[
    body('email','enter a valid email').isEmail(),
    body('password','password cannot be blank').exists()
 ],async (req,res) =>{
-   
+   let success = false
    //if there errors, return bad request and the errors
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -71,13 +72,15 @@ router.post('/login',[
    //finding whether the user with the entered email exist or not 
    let user = await User.findOne({email});
    if(!user){
+      success = false
     return  res.json({msg:"please try to login with correct credential"}).status(400)
    }
    //if exist then 
    //comparing the password entered by the user against the password fetched from the database for the particular entered email
    const passwordCompare = await bcrypt.compare(password, user.password);
    if(!passwordCompare){
-    return  res.json({msg:"please try to login with correct credential"}).status(400)
+    success = false
+    return  res.json({success,msg:"please try to login with correct credential"}).status(400)
    }
 
    const payload = {
@@ -85,9 +88,10 @@ router.post('/login',[
          id: user.id
       }
    }
-
+   //preparing auth token for loggined user
    const authToken = jwt.sign(payload,JWT_SECRET); 
-   res.json({authToken})
+   success = true
+   res.json({success,authToken})
   
 } catch (error) {
    console.error(error.message);

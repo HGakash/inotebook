@@ -1,6 +1,6 @@
 import React,{useEffect} from 'react'
 import { Link,useLocation } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
   let location = useLocation();
@@ -8,6 +8,18 @@ function Navbar() {
     // Google Analytics
     console.log(location.pathname);
   }, [location]);
+ 
+  //assigning useNavigate hook to a variable
+  const navigate = useNavigate()
+
+  const logOutHandler = () => {
+      //Remove the token from the local storage
+       localStorage.removeItem('token');
+       //Optionally clearing other storage data
+       localStorage.clear();
+       //redirect the user to login page
+       navigate('/login')
+  }
 
   return (
      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -25,10 +37,10 @@ function Navbar() {
           <Link className={`nav-link ${location.pathname==='/about'?"active":""}`} to="/about">About</Link>
         </li>
       </ul>
-      <form className="d-flex" role="search">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button className="btn btn-outline-success" type="submit">Search</button>
-      </form>
+     {!localStorage.getItem('token')?<form className="d-flex" role="search">
+      <Link type="button" to="/login" className="btn btn-primary mx-1">Login</Link>
+      <Link type="button" to="/signup" className="btn btn-primary mx-1  ">Signup</Link>
+      </form>:<button onClick={logOutHandler} className="btn btn-primary mx-4">Log Out</button> }
     </div>
   </div>
 </nav>
